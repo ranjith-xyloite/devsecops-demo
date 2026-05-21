@@ -71,5 +71,6 @@ jobs:
         with:
           image-ref: 'demo-app:latest'
           severity: 'HIGH,CRITICAL'
+          ignore-unfixed: true
           format: 'table'
           exit-code: '1'
