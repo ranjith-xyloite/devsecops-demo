@@ -18,41 +18,53 @@ jobs:
 
     steps:
 
+      # -----------------------------------
+      # Checkout Code
+      # -----------------------------------
+
       - name: Checkout Code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      # -------------------------
+      # -----------------------------------
       # CodeQL
-      # -------------------------
+      # -----------------------------------
 
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v3
+        uses: github/codeql-action/init@v4
         with:
           languages: python
 
-      - name: Autobuild
-        uses: github/codeql-action/autobuild@v3
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Dependencies
+        run: |
+          pip install -r requirements.txt
 
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v3
+        uses: github/codeql-action/analyze@v4
 
-      # -------------------------
+      # -----------------------------------
       # Gitleaks
-      # -------------------------
+      # -----------------------------------
 
       - name: Run Gitleaks
         uses: gitleaks/gitleaks-action@v2
 
-      # -------------------------
+      # -----------------------------------
       # Build Docker Image
-      # -------------------------
+      # -----------------------------------
 
       - name: Build Docker Image
         run: docker build -t demo-app:latest .
 
-      # -------------------------
+      # -----------------------------------
       # Trivy Scan
-      # -------------------------
+      # -----------------------------------
 
       - name: Scan Docker Image
         uses: aquasecurity/trivy-action@master
