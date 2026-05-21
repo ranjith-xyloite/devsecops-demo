@@ -1,15 +1,19 @@
 from flask import Flask, request
-import os
+import sqlite3
 
 app = Flask(__name__)
 
-@app.route("/")
-def home():
-    return "DevSecOps Demo"
+@app.route("/user")
+def user():
+    username = request.args.get("username")
 
-@app.route("/exec")
-def exec_cmd():
-    cmd = request.args.get("cmd")
-    return os.popen(cmd).read()
+    conn = sqlite3.connect("test.db")
+    cursor = conn.cursor()
+
+    query = "SELECT * FROM users WHERE username = '" + username + "'"
+
+    cursor.execute(query)
+
+    return "Executed query"
 
 app.run(host="0.0.0.0", port=5000)
